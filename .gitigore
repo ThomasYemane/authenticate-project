@@ -1,0 +1,12 @@
+.env
+
+# Ignore node_modules
+node_modules/
+
+# Ignore database files
+db/dev.db
+db/*.sqlite
+
+# Ignore logs and temp files
+npm-debug.log*
+.DS_Store
