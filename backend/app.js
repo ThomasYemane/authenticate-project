@@ -1,12 +1,11 @@
 const express = require('express');
+
 require('express-async-errors');
 const morgan = require('morgan');
 const cors = require('cors');
 const csrf = require('csurf');
 const helmet = require('helmet');
 const cookieParser = require('cookie-parser');
-// const { ValidationError } = require('sequelize');
-// const routes = require('./routes');
 
 const { environment } = require('./config');
 const isProduction = environment === 'production';
@@ -20,7 +19,7 @@ app.use(cookieParser());
 app.use(express.json());
 
 if (isProduction) {
-    //enable cars only in development
+    // Enable CORS only in development
     app.use(cors());
 }
 
@@ -30,7 +29,7 @@ app.use(
     })
 );
 
-//Set the csrf token and create req.csrdToken method
+// Set up CSRF protection before routes
 app.use(
     csrf({
         cookie: {
@@ -40,5 +39,8 @@ app.use(
         }
     })
 ); 
+
+// Use routes after setting up middleware
 app.use(routes);
+
 module.exports = app;
