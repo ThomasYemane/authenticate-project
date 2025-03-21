@@ -1,14 +1,33 @@
 // backend/routes/api/session.js
 const express = require('express');
-const router = express.Router(); 
 const { Op } = require('sequelize');           // Import Sequelize operators
 const bcrypt = require('bcryptjs');            // Import bcrypt for password comparison
+const { check } = require('express-validator');
+const { handleValidationErrors } = require('../../utils/validation');
+
 
 const { setTokenCookie, restoreUser } = require('../../utils/auth');  // Import auth utilities
 const { User } = require('../../db/models');   // Import User model
+const router = express.Router(); 
 
 
-router.post('/', async (req, res, next) => {   // POST /api/session endpoint
+const validateLogin = [
+  check('credential')
+    .exists({ checkFalsy: true })
+    .notEmpty()
+    .withMessage('Please provide a valid email or username.'),
+  check('password')
+    .exists({ checkFalsy: true })
+    .withMessage('Please provide a password.'),
+  handleValidationErrors
+];
+
+
+
+router.post(
+  '/',
+  validateLogin,
+   async (req, res, next) => {   // POST /api/session endpoint
     const { credential, password } = req.body;   // Extract credentials from request body
   
     // Find the user by either username or email
